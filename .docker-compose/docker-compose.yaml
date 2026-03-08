@@ -51,6 +51,9 @@ services:
       DB_PASSWORD: traffic_pass
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      SPRINGDOC_SWAGGER_UI_ENABLED: "true"
+      SPRINGDOC_API_DOCS_ENABLED: "true"
+      SERVER_FORWARD_HEADERS_STRATEGY: framework
     depends_on:
       postgres:
         condition: service_healthy
