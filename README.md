@@ -50,6 +50,20 @@ The data is inherently relational:
 
 - Due to the fact that we don't actually own the key `controllerId` we are using in each table a surrogate ID as the PK
 
+##### Schema
+
+**`controllers`** — represents a physical traffic controller device. The source of truth for all registered controllers. All other tables reference it via `controller_id`.
+
+**`controller_status`** — append-only history of status snapshots reported by each controller. Each row captures the controller state (e.g. `OPERATIONAL`, `SIGNAL_FAILURE`), the active signal program, any active error codes (stored as JSONB), and the timestamp reported by the device itself (`device_timestamp`) vs when our system recorded it (`created_at`). The gap between these two timestamps reflects the processing latency between
+when the device reported the data and when our system persisted it to the database.
+
+**`detector_readings`** — append-only history of detector readings received from each controller. Each row represents a single detector's vehicle count and occupancy at a point in time. A controller may report multiple detectors per ingestion cycle.
+
+**`commands`** — audit trail of every command dispatched to a controller. Records whether the command succeeded, the result value returned by the device, and the full timestamp history. Commands are never cached since they are write operations that must always reach the physical device.
+
+##### Indexes
+
+Each table is indexed on `controller_id` for fast lookup by controller, and on `created_at DESC` / `device_timestamp DESC` for efficient time-ordered queries and pagination.
 ### Redis
 
 Due to high intensity, we would like to reduce connections to the DB as much as we can.

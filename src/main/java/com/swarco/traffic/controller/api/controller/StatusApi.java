@@ -22,7 +22,7 @@ public interface StatusApi {
     @Operation(summary = "Get current status", description = "Fetches the latest state from Redis or directly from the DB")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved current status")
     @ApiResponse(responseCode = "404", description = "Controller not found")
-    ResponseEntity<ControllerStatusDto> getCurrentStatus(
+    ResponseEntity<ControllerStatusDto> getLatestStatus(
         @Parameter(description = "ID of the controller", example = "fd35.z1.suburb12.loc")
         @PathVariable String controllerId);
 

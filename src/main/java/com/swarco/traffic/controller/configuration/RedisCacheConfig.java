@@ -3,7 +3,6 @@ package com.swarco.traffic.controller.configuration;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,15 +25,14 @@ import java.util.Map;
 public class RedisCacheConfig {
 
     @Bean
-    public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-        ObjectMapper mapper = new ObjectMapper()
-            .registerModule(new JavaTimeModule())
+    public CacheManager cacheManager(RedisConnectionFactory connectionFactory, ObjectMapper objectMapper) {
+        ObjectMapper redisMapper = objectMapper.copy()
             .activateDefaultTyping(
                 LaissezFaireSubTypeValidator.instance,
-                ObjectMapper.DefaultTyping.NON_FINAL,
+                ObjectMapper.DefaultTyping.EVERYTHING,
                 JsonTypeInfo.As.PROPERTY);
 
-        GenericJackson2JsonRedisSerializer jsonSerializer = new GenericJackson2JsonRedisSerializer(mapper);
+        GenericJackson2JsonRedisSerializer jsonSerializer = new GenericJackson2JsonRedisSerializer(redisMapper);
 
         RedisCacheConfiguration defaultConfig =
             RedisCacheConfiguration
@@ -46,10 +44,8 @@ public class RedisCacheConfig {
                 .disableCachingNullValues();
 
         Map<String, RedisCacheConfiguration> cacheConfigs = Map.of(
-            "controllerStatus",
-            defaultConfig.entryTtl(Duration.ofSeconds(10)),
-            "detectorReadings",
-            defaultConfig.entryTtl(Duration.ofSeconds(10))
+            "controllerStatus", defaultConfig.entryTtl(Duration.ofSeconds(10)),
+            "detectorReadings", defaultConfig.entryTtl(Duration.ofSeconds(10))
         );
 
         return RedisCacheManager.builder(connectionFactory)

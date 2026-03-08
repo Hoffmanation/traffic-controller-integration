@@ -18,7 +18,7 @@ public class StatusController implements StatusApi {
     private final TrafficControllerManager controllerManager;
 
     @Override
-    public ResponseEntity<ControllerStatusDto> getCurrentStatus(String controllerId) {
+    public ResponseEntity<ControllerStatusDto> getLatestStatus(String controllerId) {
         log.info("Fetching current status for controller: {}", controllerId);
         var status = controllerManager.getLatestStatus(controllerId);
         return ResponseEntity.ok(status);
