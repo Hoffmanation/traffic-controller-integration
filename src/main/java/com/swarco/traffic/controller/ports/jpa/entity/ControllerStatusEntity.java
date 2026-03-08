@@ -8,10 +8,10 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -19,7 +19,7 @@ import java.time.Instant;
 import java.util.List;
 
 /**
- * controller_status table will represent historical snapshot of every status poll
+ * controller_status table will represent  status updates reported by a controller
  */
 @Entity
 @Table(name = "controller_status",
@@ -31,7 +31,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 public class ControllerStatusEntity extends BaseEntity {
 
     @Column(name = "controller_id", nullable = false, length = 128)

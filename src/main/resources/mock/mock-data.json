@@ -1,0 +1,38 @@
+{
+  "controller-statuses": [
+    {
+      "state": "DETECTOR_FAILURE",
+      "program": "SP1",
+      "errors": [
+        {"code": "E101", "message": "Detector D3 malfunction"},
+        {"code": "E102", "message": "Signal group SG2 offline"}
+      ]
+    },
+    {
+      "state": "OPERATIONAL",
+      "program": "SP2",
+      "errors": []
+    },
+    {
+      "state": "SIGNAL_FAILURE",
+      "program": "SP1",
+      "errors": [
+        {"code": "E500", "message": "Main fuse blown"}
+      ]
+    }
+  ],
+  "detector-readings": [
+    {
+      "detectors": [
+        {"id": 1, "name": "D1", "vehicleCount": 12, "occupancy": 0.23},
+        {"id": 2, "name": "D2", "vehicleCount": 7, "occupancy": 0.12}
+      ]
+    },
+    {
+      "detectors": [
+        {"id": 1, "name": "D1", "vehicleCount": 45, "occupancy": 0.88},
+        {"id": 2, "name": "D2", "vehicleCount": 30, "occupancy": 0.65}
+      ]
+    }
+  ]
+}

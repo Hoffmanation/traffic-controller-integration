@@ -5,15 +5,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.time.Instant;
 
 /**
- * detector_readings table will represent history for trend analysis
+ * detector_readings table will represent detector data received from the controller
  */
 @Entity
 @Table(name = "detector_readings",
@@ -26,7 +26,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 public class DetectorReadingEntity extends BaseEntity {
 
     @Column(name = "controller_id", nullable = false, length = 128)

@@ -1,6 +1,6 @@
 package com.swarco.traffic.controller.ports.jpa.entity;
 
-import com.swarco.traffic.controller.domain.model.CommandStatus;
+import com.swarco.traffic.controller.domain.model.CommandType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,6 +10,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.time.Instant;
 
@@ -25,17 +26,18 @@ import java.time.Instant;
 @Getter
 @Setter
 @NoArgsConstructor
+@SuperBuilder
 public class CommandEntity extends BaseEntity {
 
     @Column(name = "controller_id", nullable = false, length = 128)
     private String controllerId;
 
-    @Column(name = "command", nullable = false, length = 256)
-    private String command;
-
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, length = 16)
-    private CommandStatus status;
+    @Column(name = "command", nullable = false, length = 128)
+    private CommandType command;
+
+    @Column(name = "success", nullable = false, length = 16)
+    private boolean success;
 
     @Column(name = "result_value", length = 128)
     private String resultValue;

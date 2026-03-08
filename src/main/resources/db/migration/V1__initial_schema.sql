@@ -9,7 +9,7 @@ CREATE TABLE controllers (
 
 CREATE INDEX idx_controllers_controller_id ON controllers (controller_id);
 
--- controller_status table will represent historical snapshot of every status poll
+-- controller_status table will represent  status updates reported by a controller
 CREATE TABLE controller_status (
     id               BIGSERIAL    PRIMARY KEY,
     controller_id    VARCHAR(128) NOT NULL REFERENCES controllers (controller_id) ON DELETE CASCADE,
@@ -17,13 +17,13 @@ CREATE TABLE controller_status (
     program          VARCHAR(32),
     errors_json      JSONB        DEFAULT '[]'::jsonb,
     device_timestamp TIMESTAMPTZ,
-    created_at      TIMESTAMPTZ  NOT NULL DEFAULT now()
+    created_at       TIMESTAMPTZ  NOT NULL DEFAULT now()
 );
 
 CREATE INDEX idx_status_controller_id ON controller_status (controller_id);
 CREATE INDEX idx_status_created_at   ON controller_status (created_at DESC);
 
--- detector_readings table will repreasent history for trend analysis
+-- detector_readings table will represent detector data received from the controller
 CREATE TABLE detector_readings (
     id               BIGSERIAL    PRIMARY KEY,
     controller_id    VARCHAR(128) NOT NULL REFERENCES controllers (controller_id) ON DELETE CASCADE,
@@ -43,11 +43,11 @@ CREATE INDEX idx_det_device_ts     ON detector_readings (device_timestamp DESC);
 CREATE TABLE commands (
     id               BIGSERIAL    PRIMARY KEY,
     controller_id    VARCHAR(128) NOT NULL REFERENCES controllers (controller_id) ON DELETE CASCADE,
-    command          VARCHAR(256) NOT NULL,
-    status           VARCHAR(16)  NOT NULL,
+    command          VARCHAR(128)  NOT NULL,
+    success          BOOLEAN      NOT NULL DEFAULT false,
     result_value     VARCHAR(128),
     device_timestamp TIMESTAMPTZ,
-    created_at          TIMESTAMPTZ  NOT NULL DEFAULT now()
+    created_at       TIMESTAMPTZ  NOT NULL DEFAULT now()
 );
 
 CREATE INDEX idx_cmd_controller_id ON commands (controller_id);

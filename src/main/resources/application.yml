@@ -13,7 +13,7 @@ spring:
       minimum-idle: 2
       connection-timeout: 30000
 
-  # JPA / Hibernate
+  # JPA
   jpa:
     hibernate:
       ddl-auto: validate
@@ -24,15 +24,26 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     open-in-view: false
 
-  # flyway migrations
+  # Migration tool
   flyway:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
 
+  # Redis for caching/real-time data
+  cache:
+    type: redis
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2000ms
+
 server:
   port: 8080
 
+# actuator
 management:
   endpoints:
     web:
@@ -42,7 +53,20 @@ management:
     health:
       show-details: always
 
+# controllers properties
+app:
+  controllers:
+    definitions:
+      "fd132.z1.highway.a21.loc": "Berlin Alexanderplatz"
+      "fd11.z1.downtown.loc": "Berlin Potsdamer Platz"
+      "fd35.z1.suburb12.loc": "Berlin Spandau"
+      "fd88.z2.ring-road.loc": "Berlin Mess Nord"
+      "fd07.z3.airport.loc": "Berlin Brandenburg Airport, BER"
+  ingestion:
+    interval-ms: 2000
+
 logging:
   level:
     com.traffic: INFO
-    org.springframework.cache: DEBUG
+    org.springframework.cache: TRACE
+    org.springframework.data.redis: TRACE

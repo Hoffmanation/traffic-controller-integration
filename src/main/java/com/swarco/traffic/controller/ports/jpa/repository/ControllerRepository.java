@@ -11,4 +11,5 @@ public interface ControllerRepository extends JpaRepository<ControllerEntity, Lo
 
     Optional<ControllerEntity> findByControllerId(String controllerId);
 
+    boolean existsByControllerId(String controllerId);
 }
