@@ -15,6 +15,7 @@ import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdviceAdapter;
@@ -22,6 +23,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdviceAd
 import java.lang.reflect.Type;
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -77,6 +79,26 @@ public class ApiExceptionHandler extends RequestBodyAdviceAdapter {
             "COMMAND_ERROR",
             errorMessage,
             "controllerId"
+        );
+        return ResponseEntity.status(status).body(List.of(errorResponse));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<List<ErrorResponse>> handleValidation(MethodArgumentNotValidException exception) {
+        var status = HttpStatus.BAD_REQUEST;
+        var errorMessage =
+            exception.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
+                .collect(Collectors.joining("; "));
+        logErrorContext(errorMessage, buildErrorContextForStructualLog(status, "not present in request"), exception);
+        var errorResponse = ErrorResponse.of(
+            status,
+            "REQUEST_NOT_VALID",
+            errorMessage,
+            null
+
         );
         return ResponseEntity.status(status).body(List.of(errorResponse));
     }
