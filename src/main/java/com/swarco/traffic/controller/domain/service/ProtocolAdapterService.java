@@ -21,14 +21,10 @@ import java.util.Random;
  * Implementation of the {@link ProtocolAdapter} that simulates traffic controller communication
  * by utilizing localized mock data.
  * <p>
- * This service acts as a hardware abstraction layer (HAL). On initialization, it loads a
+ * On initialization, it loads a
  * predefined JSON structure from {@code classpath:mock/mock-data.json} containing various
  * operational scenarios (e.g., normal flow, sensor failures, program changes).
- * </p>
- * <p>
- * </p>
  *
- * @author oren
  */
 @Slf4j
 @Component

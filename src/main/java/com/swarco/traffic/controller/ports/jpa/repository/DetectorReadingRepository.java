@@ -26,8 +26,9 @@ public interface DetectorReadingRepository extends JpaRepository<DetectorReading
         """)
     List<DetectorReadingEntity> findLatestReadingsForControllerPerDetector(String controllerId);
 
-    @Query("SELECT d FROM DetectorReadingEntity d WHERE d.controllerId = :controllerId AND d.detectorName = :detectorName ORDER BY d.createdAt DESC")
-    Slice<DetectorReadingEntity> findHistoryForDetector(String controllerId, String detectorName, Pageable pageable);
+    // Get Recent Events (DESC) from specific detector
+    @Query("SELECT d FROM DetectorReadingEntity d WHERE d.controllerId = :controllerId AND d.detectorName = :detectorName ORDER BY d.deviceTimestamp DESC")
+    Slice<DetectorReadingEntity> findRecentDetectorReadingsByControllerIdAndDetectorName(String controllerId, String detectorName, Pageable pageable);
 
     @Query("""
         SELECT d FROM DetectorReadingEntity d
@@ -36,5 +37,5 @@ public interface DetectorReadingRepository extends JpaRepository<DetectorReading
           AND d.deviceTimestamp BETWEEN :from AND :to
         ORDER BY d.deviceTimestamp ASC
         """)
-    Slice<DetectorReadingEntity> findByControllerIdAndDetectorNameBetween(String controllerId, String detectorName, Instant from, Instant to, Pageable pageable);
+    List<DetectorReadingEntity> findByControllerIdAndDetectorNameBetween(String controllerId, String detectorName, Instant from, Instant to);
 }

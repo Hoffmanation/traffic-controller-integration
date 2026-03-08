@@ -3,6 +3,7 @@ package com.swarco.traffic.controller.api.controller;
 
 import com.swarco.traffic.controller.domain.model.ControllerStatusDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -18,17 +19,19 @@ import java.util.List;
 public interface StatusApi {
 
     @GetMapping
-    @Operation(summary = "Get current status",
-        description = "Fetches the latest state from Redis or directly from the DB")
+    @Operation(summary = "Get current status", description = "Fetches the latest state from Redis or directly from the DB")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved current status")
     @ApiResponse(responseCode = "404", description = "Controller not found")
-    ResponseEntity<ControllerStatusDto> getCurrentStatus(@PathVariable String controllerId);
+    ResponseEntity<ControllerStatusDto> getCurrentStatus(
+        @Parameter(description = "ID of the controller", example = "fd35.z1.suburb12.loc")
+        @PathVariable String controllerId);
 
     @GetMapping("/history")
-    @Operation(summary = "Get status history",
-        description = "Returns a historical controller status, newest first with pagination")
+    @Operation(summary = "Get status history", description = "Returns a historical controller status, newest first with pagination")
     @ApiResponse(responseCode = "200", description = "Historical status log retrieved")
-    ResponseEntity<List<ControllerStatusDto>> getStatusHistory(@PathVariable String controllerId,
-                                                               @RequestParam(defaultValue = "0") int page,
-                                                               @RequestParam(defaultValue = "20") int size);
+    ResponseEntity<List<ControllerStatusDto>> getStatusHistory(
+        @Parameter(description = "ID of the controller", example = "fd35.z1.suburb12.loc")
+        @PathVariable String controllerId,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "20") int size);
 }

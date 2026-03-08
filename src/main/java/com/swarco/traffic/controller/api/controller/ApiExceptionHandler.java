@@ -57,7 +57,7 @@ public class ApiExceptionHandler extends RequestBodyAdviceAdapter {
     public ResponseEntity<List<ErrorResponse>> handleControllerNotFoundException(ControllerNotFoundException exception) {
         var status = HttpStatus.NOT_FOUND;
         var errorMessage = exception.getMessage();
-        logErrorContext(errorMessage, buildErrorContext(status, exception.getControllerId()), exception);
+        logErrorContext(errorMessage, buildErrorContextForStructualLog(status, exception.getControllerId()), exception);
         var errorResponse = ErrorResponse.of(
             status,
             "CONTROLLER_ERROR",
@@ -71,7 +71,7 @@ public class ApiExceptionHandler extends RequestBodyAdviceAdapter {
     public ResponseEntity<List<ErrorResponse>> handleCommandTypeNotFound(CommandTypeNotFound exception) {
         var status = HttpStatus.NOT_FOUND;
         var errorMessage = exception.getMessage();
-        logErrorContext(errorMessage, buildErrorContext(status, exception.getControllerId()), exception);
+        logErrorContext(errorMessage, buildErrorContextForStructualLog(status, exception.getControllerId()), exception);
         var errorResponse = ErrorResponse.of(
             status,
             "COMMAND_ERROR",
@@ -104,7 +104,7 @@ public class ApiExceptionHandler extends RequestBodyAdviceAdapter {
             .log();
     }
 
-    private ErrorContext buildErrorContext(HttpStatus status, String controllerId) {
+    private ErrorContext buildErrorContextForStructualLog(HttpStatus status, String controllerId) {
         var endpoint = request.getRequestURI();
         var queryString = request.getQueryString();
         if (StringUtils.isNotBlank(queryString)) {
@@ -151,6 +151,8 @@ public class ApiExceptionHandler extends RequestBodyAdviceAdapter {
      * @param message   A description of the error
      * @param attribute The name of the field or property that caused the failure
      * @param value     The invalid value that was provided
+     * @param status    The HTTP status error
+     * @param timestamp The timestamp of whe the error occurred
      */
     @Builder
     @JsonInclude(JsonInclude.Include.NON_NULL)

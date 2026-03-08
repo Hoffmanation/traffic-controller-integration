@@ -17,6 +17,12 @@ import com.swarco.traffic.controller.domain.model.DetectorReading;
 
 import java.util.List;
 
+
+/**
+ * This class will be triggers ever x timeunit (configurable at app.ingestion.interval-ms)
+ * In order to fetch the latest data regarding Contoller status and Detector Reading
+ * It will then remove Redis cache and will persist the data to the DB
+ * */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -60,7 +66,6 @@ public class IngestionScheduler {
                     .toList();
 
             detectorRepository.saveAll(detectorEntities);
-
         }
     }
 

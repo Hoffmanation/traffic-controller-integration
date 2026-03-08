@@ -16,21 +16,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommandController implements CommandApi {
 
-    private final TrafficControllerManager controllerService;
+    private final TrafficControllerManager controllerManager;
 
     @Override
     @Transactional
     public ResponseEntity<CommandResultDto> sendCommand(String controllerId, SendCommandRequest request) {
         log.info("Sending command: {} to controller: {}", request.getCommand(), controllerId);
-        var result = controllerService.sendCommand(controllerId, request.getCommand());
+        var result = controllerManager.sendCommand(controllerId, request.getCommand());
         return ResponseEntity.ok(result);
     }
 
     @Override
     @Transactional(readOnly = true)
     public ResponseEntity<List<CommandResultDto>> getCommandHistory(String controllerId, int page, int size) {
-        log.debug("Fetching command history for controller: {}", controllerId);
-        var history = controllerService.getCommandHistory(controllerId, page, size);
+        log.info("Fetching command history for controller: {}", controllerId);
+        var history = controllerManager.getCommandHistory(controllerId, page, size);
         return ResponseEntity.ok(history);
     }
 }

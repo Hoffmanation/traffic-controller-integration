@@ -8,6 +8,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.stereotype.Component;
 
+/**
+ * This class runs on application upload and persist {@link ControllerEntity} into the DB
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j

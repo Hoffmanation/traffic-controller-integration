@@ -46,12 +46,10 @@ public abstract class TrafficControllerMapper {
     @Mapping(target = "createdAt", ignore = true)
     public abstract DetectorReadingEntity toEntity(DetectorReading reading, String controllerId);
 
-    @Mapping(target = "deviceTimestamp", source = "reading.timestamp")
-    @Mapping(target = "detectorName", source = "reading.name")
+    @Mapping(target = "deviceTimestamp", source = "reading.deviceTimestamp")
+    @Mapping(target = "detectorName", source = "reading.detectorName")
     @Mapping(target = "controllerId", source = "controllerId")
     @Mapping(target = "detectorNumber", source = "reading.id")
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    public abstract DetectorReadingDto toDto(DetectorReading reading, String controllerId);
+    public abstract DetectorReadingDto toDto(DetectorReadingEntity reading, String controllerId);
 
 }

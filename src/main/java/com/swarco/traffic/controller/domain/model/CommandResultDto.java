@@ -31,7 +31,7 @@ public class CommandResultDto {
     private String controllerId;
 
     @Schema(
-        description = "status of the command",
+        description = "if command wad success or not",
         example = "SUCCESS",
         accessMode = Schema.AccessMode.READ_ONLY
     )

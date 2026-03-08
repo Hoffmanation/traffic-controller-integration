@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(name = "ControllerStatus", description = "Current operational snapshot of a traffic controller")
+@Schema(name = "ControllerStatus", description = "Current status of the traffic controller")
 public class ControllerStatusDto {
 
     @Schema(
@@ -32,7 +32,7 @@ public class ControllerStatusDto {
     private ControllerState state;
 
     @Schema(
-        description = "the program on the device",
+        description = "the program on the traffic controller",
         example = "SP1",
         nullable = true
     )

@@ -9,7 +9,6 @@ import com.swarco.traffic.controller.ports.jpa.repository.CommandRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,7 +19,6 @@ public class CommandJpaService {
     private final CommandRepository commandRepository;
     private final TrafficControllerMapper mapper;
 
-    @Transactional
     public CommandResultDto saveCommandResult(String controllerId, CommandResult raw) {
         CommandType.fromString(raw.getCommand(), controllerId);
         CommandEntity entity = mapper.toEntity(raw, controllerId);
@@ -28,7 +26,6 @@ public class CommandJpaService {
         return mapper.toDto(saved);
     }
 
-    @Transactional(readOnly = true)
     public List<CommandResultDto> getHistory(String controllerId, int page, int size) {
         return commandRepository.findAllByControllerIdOrderByCreatedAtDesc(controllerId, PageRequest.of(page, size))
             .stream()

@@ -18,12 +18,12 @@ import java.time.Duration;
 import java.util.Map;
 
 /**
- * Redis cache configuration.
- * Cache TTL 10 seconds  (high-frequency dashboard polling)
+ * This Class represent Redis cache configuration.
+ * Cache TTL 10 seconds
  * Both caches are evicted eagerly by the IngestionScheduler after each ingest cycle
  */
 @Configuration
-public class CacheConfig {
+public class RedisCacheConfig {
 
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {

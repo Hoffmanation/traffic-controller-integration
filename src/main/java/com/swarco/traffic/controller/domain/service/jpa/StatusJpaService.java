@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,10 +21,6 @@ public class StatusJpaService {
     private final TrafficControllerMapper mapper;
 
 
-    /**
-     * Retrieves the full historical ControllerStatus for a specific controller by pagination.
-     */
-    @Transactional(readOnly = true)
     public List<ControllerStatusDto> getHistory(String controllerId, int page, int size) {
         log.debug("Fetching status history for controller: {}", controllerId);
         return statusRepository.findAllByControllerIdOrderByCreatedAtDesc(controllerId, PageRequest.of(page, size))
@@ -34,7 +29,6 @@ public class StatusJpaService {
             .toList();
     }
 
-    @Transactional(readOnly = true)
     public ControllerStatusDto getLatestStatus(String controllerId) {
         log.debug("Fetching latest snapshot for controller: {}", controllerId);
         return statusRepository.findLatestByControllerId(controllerId)

@@ -15,19 +15,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StatusController implements StatusApi {
 
-    private final TrafficControllerManager controllerService;
+    private final TrafficControllerManager controllerManager;
 
     @Override
     public ResponseEntity<ControllerStatusDto> getCurrentStatus(String controllerId) {
-        log.info("Requesting current status for controller: {}", controllerId);
-        var status = controllerService.getLatestStatus(controllerId);
+        log.info("Fetching current status for controller: {}", controllerId);
+        var status = controllerManager.getLatestStatus(controllerId);
         return ResponseEntity.ok(status);
     }
 
     @Override
     public ResponseEntity<List<ControllerStatusDto>> getStatusHistory(String controllerId, int page, int size) {
-        log.debug("Fetching historical status logs for controller: {}", controllerId);
-        var history = controllerService.getStatusHistory(controllerId, page, size);
+        log.info("Fetching historical status logs for controller: {}", controllerId);
+        var history = controllerManager.getStatusHistory(controllerId, page, size);
         return ResponseEntity.ok(history);
     }
 }
