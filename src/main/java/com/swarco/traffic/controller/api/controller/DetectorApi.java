@@ -19,14 +19,20 @@ public interface DetectorApi {
     @Operation(summary = "Get latest readings", description = "Retrieves the latest detector readings for a specific controller from Redis or directly from the DB")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved readings")
     @ApiResponse(responseCode = "404", description = "Controller not found")
-    @GetMapping
-    ResponseEntity<List<DetectorReadingDto>> getLatestReadings(
+    @GetMapping("/{controllerId}/detectors")
+    ResponseEntity<List<DetectorReadingDto>> getLatestReadingsForController(
         @Parameter(description = "ID of the controller", example = "fd35.z1.suburb12.loc")
         @PathVariable String controllerId);
 
+    @Operation(summary = "Get latest readings", description = "Retrieves the latest detector readings for a specific controller from Redis or directly from the DB")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved readings")
+    @ApiResponse(responseCode = "404", description = "Controller not found")
+    @GetMapping("/detectors/get-all")
+    ResponseEntity<List<DetectorReadingDto>> getLatestReadingsForAllControllers();
+
     @Operation(summary = "Get detector history", description = "Retrieves historical data for a specific detector filtered by time range")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved history")
-    @GetMapping("/{detectorName}/history")
+    @GetMapping("/{controllerId}/detectors/{detectorName}/history")
     ResponseEntity<List<DetectorReadingDto>> getDetectorHistoryByTimeRange(
         @Parameter(description = "ID of the controller", example = "fd35.z1.suburb12.loc")
         @PathVariable String controllerId,
@@ -39,7 +45,7 @@ public interface DetectorApi {
 
     @Operation(summary = "Get latest readings for specific detector", description = "Retrieves the latest data for a specific detector with pagination")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved history")
-    @GetMapping("/{detectorName}")
+    @GetMapping("/{controllerId}/detectors/{detectorName}")
     ResponseEntity<List<DetectorReadingDto>> getDetectorReadingsByPagination(
         @Parameter(description = "ID of the controller", example = "fd35.z1.suburb12.loc")
         @PathVariable String controllerId,

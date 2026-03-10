@@ -30,8 +30,10 @@ class DetectorControllerTest {
     private TrafficControllerManager controllerManager;
 
     private static final String CONTROLLER_ID = "fd35.z1.suburb12.loc";
+    private static final String CONTROLLER_ID_2 = "fd35.z2.suburb13.loc";
     private static final String DETECTOR_NAME = "D1";
     private static final String BASE_URL = "/api/v1/controllers/{controllerId}/detectors";
+    private static final String ALL_DETECTORS_URL = "/api/v1/controllers/detectors/get-all";
 
     @Test
     void getLatestReadings_existingController_returns200() throws Exception {
@@ -71,6 +73,60 @@ class DetectorControllerTest {
     }
 
     @Test
+    void getLatestReadingsForAllControllers_returns200WithAllReadings() throws Exception {
+        List<DetectorReadingDto> readings = List.of(
+            DetectorReadingDto.builder().controllerId(CONTROLLER_ID).detectorName("D1").vehicleCount(12).build(),
+            DetectorReadingDto.builder().controllerId(CONTROLLER_ID).detectorName("D2").vehicleCount(7).build(),
+            DetectorReadingDto.builder().controllerId(CONTROLLER_ID_2).detectorName("D1").vehicleCount(3).build(),
+            DetectorReadingDto.builder().controllerId(CONTROLLER_ID_2).detectorName("D2").vehicleCount(9).build()
+        );
+
+        when(controllerManager.getLatestDetectorReadingsForAllControllers()).thenReturn(readings);
+
+        mockMvc.perform(get(ALL_DETECTORS_URL)
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.length()").value(4))
+            .andExpect(jsonPath("$[0].controllerId").value(CONTROLLER_ID))
+            .andExpect(jsonPath("$[0].detectorName").value("D1"))
+            .andExpect(jsonPath("$[2].controllerId").value(CONTROLLER_ID_2))
+            .andExpect(jsonPath("$[2].detectorName").value("D1"));
+
+        verify(controllerManager, times(1)).getLatestDetectorReadingsForAllControllers();
+    }
+
+    @Test
+    void getLatestReadingsForAllControllers_noReadings_returns200WithEmptyList() throws Exception {
+        when(controllerManager.getLatestDetectorReadingsForAllControllers()).thenReturn(List.of());
+
+        mockMvc.perform(get(ALL_DETECTORS_URL)
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.length()").value(0));
+
+        verify(controllerManager, times(1)).getLatestDetectorReadingsForAllControllers();
+    }
+
+    @Test
+    void getLatestReadingsForAllControllers_multipleControllersSameDetectorName_returnsLatestPerEach() throws Exception {
+        List<DetectorReadingDto> readings = List.of(
+            DetectorReadingDto.builder().controllerId(CONTROLLER_ID).detectorName("D1").vehicleCount(5).build(),
+            DetectorReadingDto.builder().controllerId(CONTROLLER_ID_2).detectorName("D1").vehicleCount(8).build()
+        );
+
+        when(controllerManager.getLatestDetectorReadingsForAllControllers()).thenReturn(readings);
+
+        mockMvc.perform(get(ALL_DETECTORS_URL)
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.length()").value(2))
+            .andExpect(jsonPath("$[0].controllerId").value(CONTROLLER_ID))
+            .andExpect(jsonPath("$[1].controllerId").value(CONTROLLER_ID_2));
+
+        verify(controllerManager, times(1)).getLatestDetectorReadingsForAllControllers();
+    }
+
+    @Test
     void getDetectorHistoryByTimeRange_validTimeRange_returns200() throws Exception {
         Instant from = Instant.parse("2026-03-08T10:00:00Z");
         Instant to = Instant.parse("2026-03-08T11:00:00Z");
@@ -100,7 +156,6 @@ class DetectorControllerTest {
         mockMvc.perform(get(BASE_URL + "/{detectorName}/history", CONTROLLER_ID, DETECTOR_NAME))
             .andExpect(status().isOk());
     }
-
 
     @Test
     void getDetectorReadingsByPagination_validRequest_returns200() throws Exception {

@@ -71,4 +71,10 @@ public class DetectorReadingDto {
         accessMode = Schema.AccessMode.READ_ONLY
     )
     private Instant createdAt;
+
+    @Schema(
+        description = "The traffic controller dto",
+        accessMode = Schema.AccessMode.READ_ONLY
+    )
+    private ControllerDto controllerDto;
 }

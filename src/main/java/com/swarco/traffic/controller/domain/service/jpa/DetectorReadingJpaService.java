@@ -21,7 +21,7 @@ public class DetectorReadingJpaService {
     private final TrafficControllerMapper mapper;
 
     public List<DetectorReadingDto> getLatestDetectorReadings(String controllerId) {
-        return detectorRepository.findLatestReadingsForControllerPerDetector(controllerId)
+        return detectorRepository.findLatestReadingsPerDetectorForController(controllerId)
             .stream()
             .map(detector -> mapper.toDto(detector, controllerId))
             .toList();
@@ -44,4 +44,10 @@ public class DetectorReadingJpaService {
     }
 
 
+    public List<DetectorReadingDto> getLatestDetectorReadingsForAllControllers() {
+        return detectorRepository.findLatestReadingsPerDetectorForAllControllers()
+            .stream()
+            .map(mapper::toDto)
+            .toList();
+    }
 }

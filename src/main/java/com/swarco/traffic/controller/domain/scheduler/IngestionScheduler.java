@@ -35,7 +35,7 @@ public class IngestionScheduler {
     private final TrafficControllerMapper mapper;
 
     @Scheduled(fixedRateString = "${app.ingestion.interval-ms}")
-    @CacheEvict(cacheNames = {"controllerStatus", "detectorReadings"}, allEntries = true)
+    @CacheEvict(cacheNames = {"controllerStatus", "detectorReadings", "detectorReadingsAll"}, allEntries = true)
     public void runIngestion() {
         controllerRepository
             .findAll()

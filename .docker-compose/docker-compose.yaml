@@ -37,6 +37,7 @@ services:
 
   # Spring Boot
   app:
+    image: traffic-controller:latest
     build:
       context: ..
       dockerfile: .docker-compose/Dockerfile

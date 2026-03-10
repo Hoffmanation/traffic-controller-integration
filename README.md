@@ -44,11 +44,19 @@ Repository ───▶ postgress
 
 ## Technologies
 
-### PostgreSQL
+### PostgreSQL And DB Connection
 
 The data is inherently relational:
-
 - Due to the fact that we don't actually own the key `controllerId` we are using in each table a surrogate ID as the PK
+
+#### Connect to the DB with the following credentials:
+```
+
+DB: traffic_db
+USER: traffic_user
+PASSWORD: traffic_pass
+JDBC URL: jdbc:postgresql://localhost:5432/traffic_db 
+```
 
 ##### Schema
 
@@ -84,9 +92,28 @@ Schema changes are versioned and applied automatically on startup.
 
 ---
 
-## API Reference
+## API Reference and Utilities
 
+### Swagger
 All endpoints are exposed and can be viewed in Swagger at `http://localhost:8080/swagger-ui/index.html`.
+
+### Postman
+You can import the postman collection from `postman/traffic-controller-API-spec.json`
+
+#### Available controllers
+```
+      fd132.z1.highway.a21.loc
+      fd11.z1.downtown.loc
+      fd35.z1.suburb12.loc
+      fd88.z2.ring-road.loc
+      fd07.z3.airport.loc
+```
+
+#### Available detectors
+```
+        D1
+        D2
+```     
 
 ---
 

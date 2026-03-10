@@ -44,8 +44,9 @@ public class RedisCacheConfig {
                 .disableCachingNullValues();
 
         Map<String, RedisCacheConfiguration> cacheConfigs = Map.of(
-            "controllerStatus", defaultConfig.entryTtl(Duration.ofSeconds(10)),
-            "detectorReadings", defaultConfig.entryTtl(Duration.ofSeconds(10))
+            "controllerStatus",    defaultConfig.entryTtl(Duration.ofSeconds(10)),
+            "detectorReadings",    defaultConfig.entryTtl(Duration.ofSeconds(10)),
+            "detectorReadingsAll", defaultConfig.entryTtl(Duration.ofSeconds(10))
         );
 
         return RedisCacheManager.builder(connectionFactory)

@@ -37,6 +37,7 @@ public class TrafficControllerManager {
     @Transactional
     public CommandResultDto sendCommand(String controllerId, String command) {
         log.info("Sending command to {}. Evicting cache.", controllerId);
+        controllerService.requireControllerExists(controllerId);
         var result = protocolAdapter.sendCommand(controllerId, command);
         return commandService.saveCommandResult(controllerId, result);
     }
@@ -56,9 +57,10 @@ public class TrafficControllerManager {
     @Cacheable(cacheNames = "controllerStatus", key = "#controllerId")
     @Transactional(readOnly = true)
     public ControllerStatusDto getLatestStatus(String controllerId) {
-        log.info("Redis Cache Miss for {}. Fetching last known snapshot from DB.", controllerId);
-        controllerService.requireControllerExists(controllerId);
-        return statusJpaService.getLatestStatus(controllerId);
+        var trimmedControllerId = controllerId.trim();
+        log.info("Redis Cache Miss for {}. Fetching last known snapshot from DB.", trimmedControllerId);
+        controllerService.requireControllerExists(trimmedControllerId);
+        return statusJpaService.getLatestStatus(trimmedControllerId);
     }
 
     /**
@@ -66,8 +68,9 @@ public class TrafficControllerManager {
      * */
     @Transactional(readOnly = true)
     public List<ControllerStatusDto> getStatusHistory(String controllerId, int page, int size) {
-        controllerService.requireControllerExists(controllerId);
-        return statusJpaService.getHistory(controllerId, page, size);
+        var trimmedControllerId = controllerId.trim();
+        controllerService.requireControllerExists(trimmedControllerId);
+        return statusJpaService.getHistory(trimmedControllerId, page, size);
     }
 
     /**
@@ -76,8 +79,18 @@ public class TrafficControllerManager {
     @Cacheable(cacheNames = "detectorReadings", key = "#controllerId")
     @Transactional(readOnly = true)
     public List<DetectorReadingDto> getLatestDetectorReadings(String controllerId) {
-        controllerService.requireControllerExists(controllerId);
-        return detectorJpaService.getLatestDetectorReadings(controllerId);
+        var trimmedControllerId = controllerId.trim();
+        controllerService.requireControllerExists(trimmedControllerId);
+        return detectorJpaService.getLatestDetectorReadings(trimmedControllerId);
+    }
+
+    /**
+     * Retrieve list of the latest detector readings for all controllers from Redis if exists or directly from the DB
+     * */
+    @Cacheable(cacheNames = "detectorReadingsAll")
+    @Transactional(readOnly = true)
+    public List<DetectorReadingDto> getLatestDetectorReadingsForAllControllers() {
+        return detectorJpaService.getLatestDetectorReadingsForAllControllers();
     }
 
     /**
@@ -85,8 +98,10 @@ public class TrafficControllerManager {
      * */
     @Transactional(readOnly = true)
     public List<DetectorReadingDto> getDetectorHistoryByTimeRange(String controllerId, String detectorName, Instant from, Instant to) {
-        controllerService.requireControllerExists(controllerId);
-        return detectorJpaService.getDetectorHistoryByTimeRange(controllerId, detectorName, from, to);
+        var trimmedControllerId = controllerId.trim();
+        var trimmedDetectorName = detectorName.trim();
+        controllerService.requireControllerExists(trimmedControllerId);
+        return detectorJpaService.getDetectorHistoryByTimeRange(trimmedControllerId, trimmedDetectorName, from, to);
     }
 
     /**
@@ -94,7 +109,9 @@ public class TrafficControllerManager {
      * */
     @Transactional(readOnly = true)
     public List<DetectorReadingDto> getDetectorReadingsByPagination(String controllerId, String detectorName, int page, int size) {
-        controllerService.requireControllerExists(controllerId);
-        return detectorJpaService.getDetectorReadingsByPagination(controllerId, detectorName, page, size);
+        var trimmedControllerId = controllerId.trim();
+        var trimmedDetectorName = detectorName.trim();
+        controllerService.requireControllerExists(trimmedControllerId);
+        return detectorJpaService.getDetectorReadingsByPagination(trimmedControllerId, trimmedDetectorName, page, size);
     }
 }

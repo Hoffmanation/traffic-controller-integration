@@ -13,16 +13,23 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/controllers/{controllerId}/detectors")
+@RequestMapping("/api/v1/controllers")
 @RequiredArgsConstructor
 public class DetectorController implements DetectorApi {
 
     private final TrafficControllerManager controllerManager;
 
     @Override
-    public ResponseEntity<List<DetectorReadingDto>> getLatestReadings(String controllerId) {
+    public ResponseEntity<List<DetectorReadingDto>> getLatestReadingsForController(String controllerId) {
         log.info("Fetching latest reading for controller: {}", controllerId);
         var detectorReadings = controllerManager.getLatestDetectorReadings(controllerId);
+        return ResponseEntity.ok(detectorReadings);
+    }
+
+    @Override
+    public ResponseEntity<List<DetectorReadingDto>> getLatestReadingsForAllControllers() {
+        log.info("Fetching latest reading for all controllers");
+        var detectorReadings = controllerManager.getLatestDetectorReadingsForAllControllers();
         return ResponseEntity.ok(detectorReadings);
     }
 

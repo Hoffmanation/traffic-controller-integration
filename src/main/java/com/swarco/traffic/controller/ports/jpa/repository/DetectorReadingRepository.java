@@ -1,5 +1,6 @@
 package com.swarco.traffic.controller.ports.jpa.repository;
 
+import com.swarco.traffic.controller.ports.jpa.entity.ControllerWithDetectorReading;
 import com.swarco.traffic.controller.ports.jpa.entity.DetectorReadingEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -16,15 +17,29 @@ public interface DetectorReadingRepository extends JpaRepository<DetectorReading
     @Query("""
             SELECT d FROM DetectorReadingEntity d
             WHERE d.controllerId = :controllerId
-               AND d.createdAt = (
-                  SELECT MAX(d2.createdAt)
+               AND d.deviceTimestamp = (
+                  SELECT MAX(d2.deviceTimestamp)
                   FROM DetectorReadingEntity d2
                   WHERE d2.controllerId = :controllerId
                     AND d2.detectorName = d.detectorName
               )
                 ORDER BY d.detectorNumber ASC
         """)
-    List<DetectorReadingEntity> findLatestReadingsForControllerPerDetector(String controllerId);
+    List<DetectorReadingEntity> findLatestReadingsPerDetectorForController(String controllerId);
+
+    @Query("""
+        SELECT new com.swarco.traffic.controller.ports.jpa.entity.ControllerWithDetectorReading(c, d)
+        FROM DetectorReadingEntity d
+        JOIN ControllerEntity c ON c.controllerId = d.controllerId
+        WHERE d.deviceTimestamp = (
+            SELECT MAX(d2.deviceTimestamp)
+            FROM DetectorReadingEntity d2
+            WHERE d2.controllerId = d.controllerId
+              AND d2.detectorName = d.detectorName
+        )
+        ORDER BY d.controllerId ASC, d.detectorNumber ASC
+    """)
+    List<ControllerWithDetectorReading> findLatestReadingsPerDetectorForAllControllers();
 
     // Get Recent Events (DESC) from specific detector
     @Query("SELECT d FROM DetectorReadingEntity d WHERE d.controllerId = :controllerId AND d.detectorName = :detectorName ORDER BY d.deviceTimestamp DESC")
